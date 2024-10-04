@@ -1,7 +1,7 @@
 const Post = require('../models/Post');
 
-const getAllServices = async (userId) => {
-	return await Post.findAll({ where: { userId } });
+const getAllServices = async () => {
+	return await Post.findAll();
 };
 
 const createServices = async (post) => {

@@ -1,9 +1,8 @@
-const catchError = require('../utils/catchError');
 const { getAllServices, createServices, getOneServices, removeServices, updateServices } = require('../services/post.services');
+const catchError = require('../utils/catchError');
 
 const getAll = catchError(async (req, res) => {
-	const userId = req.user.id;
-	const results = await getAllServices(userId);
+	const results = await getAllServices();
 	return res.json(results);
 });
 
