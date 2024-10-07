@@ -1,4 +1,4 @@
-const { getAll, create, getOne, remove, update, login, logged } = require('../../controllers/user.controllers');
+const { getAll, create, getOne, remove, update, login, logged, setPosts } = require('../../controllers/user.controllers');
 const express = require('express');
 const hash = require('../../middlewares/hash.middlewares');
 const credentials = require('../../middlewares/login.middlewares');
@@ -7,6 +7,8 @@ const { verifyJWT } = require('../../utils/verifyJWT');
 const routerUser = express.Router();
 
 routerUser.route('/').get(verifyJWT, getAll).post(hash, create);
+
+routerUser.route('/:id/posts').post(verifyJWT, setPosts);
 
 routerUser.route('/login').post(credentials, login);
 

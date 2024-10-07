@@ -1,5 +1,5 @@
 const catchError = require('../utils/catchError');
-const { getAllServices, createServices, getOneServices, removeServices, updateServices } = require('../services/user.services');
+const { getAllServices, createServices, getOneServices, removeServices, updateServices, setFavoritesServices } = require('../services/user.services');
 
 const jwt = require('jsonwebtoken');
 
@@ -49,6 +49,17 @@ const logged = catchError(async (req, res) => {
 	return res.json(req.user);
 });
 
+const setPosts = catchError(async (req, res) => {
+	const { id } = req.params;
+	const userLoggedId = req.user.id;
+	const user = await setFavoritesServices(id);
+	if (userLoggedId === user.id) {
+		await user.setPosts(req.body);
+		const posts = await user.getPosts();
+		return res.json(posts);
+	} else return res.status(401).json({ error: 'Invalid credentials' });
+});
+
 module.exports = {
 	getAll,
 	create,
@@ -57,4 +68,5 @@ module.exports = {
 	update,
 	login,
 	logged,
+	setPosts,
 };

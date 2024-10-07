@@ -1,7 +1,8 @@
+const Post = require('../models/Post');
 const User = require('../models/User');
 
 const getAllServices = async () => {
-	return await User.findAll();
+	return await User.findAll({ include: Post });
 };
 
 const createServices = async (user) => {
@@ -9,7 +10,7 @@ const createServices = async (user) => {
 };
 
 const getOneServices = async (id) => {
-	return await User.findByPk(id);
+	return await User.findByPk(id, { include: Post });
 };
 
 const removeServices = async (id) => {
@@ -24,4 +25,8 @@ const loginServices = async (email) => {
 	return await User.findOne({ where: { email } });
 };
 
-module.exports = { getAllServices, createServices, getOneServices, removeServices, updateServices, loginServices };
+const setFavoritesServices = async (id) => {
+	return await User.findByPk(id);
+};
+
+module.exports = { getAllServices, createServices, getOneServices, removeServices, updateServices, loginServices, setFavoritesServices };

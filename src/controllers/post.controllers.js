@@ -1,4 +1,4 @@
-const { getAllServices, createServices, getOneServices, removeServices, updateServices } = require('../services/post.services');
+const { getAllServices, createServices, getOneServices, removeServices, updateServices, ownerServices } = require('../services/post.services');
 const catchError = require('../utils/catchError');
 
 const getAll = catchError(async (req, res) => {
@@ -22,17 +22,25 @@ const getOne = catchError(async (req, res) => {
 
 const remove = catchError(async (req, res) => {
 	const { id } = req.params;
-	const result = await removeServices(id);
-	if (!result) return res.sendStatus(404);
-	return res.sendStatus(204);
+	const userLoggedId = req.user.id;
+	const owner = await ownerServices(id);
+	if (userLoggedId === owner.userId) {
+		const result = await removeServices(id);
+		if (!result) return res.sendStatus(404);
+		return res.sendStatus(204);
+	} else return res.status(401).json({ error: 'Invalid credentials' });
 });
 
 const update = catchError(async (req, res) => {
 	const { id } = req.params;
 	const { post } = req.body;
-	const result = await updateServices(id, { post });
-	if (result[0] === 0) return res.sendStatus(404);
-	return res.json(result[1][0]);
+	const userLoggedId = req.user.id;
+	const owner = await ownerServices(id);
+	if (userLoggedId === owner.userId) {
+		const result = await updateServices(id, { post });
+		if (result[0] === 0) return res.sendStatus(404);
+		return res.json(result[1][0]);
+	} else return res.status(401).json({ error: 'Invalid credentials' });
 });
 
 module.exports = {
